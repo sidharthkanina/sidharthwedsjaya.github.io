@@ -484,6 +484,8 @@ html.opened .sq{animation-delay:calc(2s + var(--i)*.36s)}
 .maker input[type=file]{padding:10px;font-size:15px}
 .maker__queue{margin-top:22px;padding:16px;border:1px solid var(--sona);border-radius:12px;background:#FFFBF2}
 .maker__queue p{margin:0 0 10px;font-size:19px}
+.maker__queue .maker__note{font-size:15px}
+.maker__link{display:block;margin:0 0 12px;font:400 14px/1.4 ui-monospace,Menlo,Consolas,monospace;color:var(--mehndi-soft);word-break:break-all;-webkit-user-select:all;user-select:all}
 .mbtn:disabled{opacity:.45}
 
 /* ================= Version 7: painted deities and ceremonies, and the new opening act ================= */
@@ -1366,6 +1368,12 @@ W.__inv={d:d,W:W,root:root,qs:qs,VIDEO:VIDEO,REDUCE:REDUCE,clean:clean,applyGues
       <p id="mkCount"></p>
       <button class="mbtn mbtn--solid" type="button" id="mkNext">Send to next guest</button>
     </div>
+    <div class="maker__queue" id="mkGroup" hidden>
+      <p>One link for a group or a status</p>
+      <p class="maker__note">It opens the card without a guest's name. Replies still come to your WhatsApp and to the guest sheet.</p>
+      <code class="maker__link" id="mkGroupUrl"></code>
+      <button class="mbtn" type="button" id="mkGroupCopy">Copy group link</button>
+    </div>
     <ul id="mkOut"></ul>
   </div>
 </div>
@@ -1775,7 +1783,7 @@ function render(){
 function makeLinks(){
   guests=parseLines(mkNames.value);
   store('inv_base',mkBase.value.trim());store('inv_host',mkHost.value.trim());store('inv_list',mkNames.value);store('inv_by',mkBy.value.trim());
-  listed();
+  listed();groupLine();
   note(!cleanBase()?'Add the link of your invitation page above to get links you can send. Until then you can preview how each guest will see the card.':guests.some(function(g){return!g.phone;})?'Guests without a number open WhatsApp with a contact picker.':'');
   render();
 }
@@ -1784,11 +1792,17 @@ d.getElementById('mkNext').addEventListener('click',function(){
   W.open(waLink(g),'_blank');mark(g,true);
 });
 d.getElementById('mkFile').addEventListener('change',function(e){if(e.target.files&&e.target.files[0])readFile(e.target.files[0]);});
+/* One link for a group or a status: the plain address with the sender's number, so that replies know where to go. */
+var mkGroup=d.getElementById('mkGroup'),mkGroupUrl=d.getElementById('mkGroupUrl');
+function groupLink(){var b=cleanBase(),h=phone(mkHost.value);return b?b+(h?'?h='+h:''):'';}
+function groupLine(){var u=groupLink();mkGroup.hidden=!u;mkGroupUrl.textContent=u;}
+d.getElementById('mkGroupCopy').addEventListener('click',function(){var u=groupLink();if(u)copy(u,this);});
+mkHost.addEventListener('input',groupLine);mkBase.addEventListener('input',groupLine);
 function openMaker(){
   if(!mkBase.value)mkBase.value=store('inv_base')||baseUrl();
   if(!mkHost.value)mkHost.value=store('inv_host')||'';
   if(!mkBy.value)mkBy.value=store('inv_by')||'';
-  sheetLine();
+  sheetLine();groupLine();
   if(!mkNames.value&&store('inv_list')){mkNames.value=store('inv_list');makeLinks();}
   mk.hidden=false;
 }

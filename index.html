@@ -1639,7 +1639,7 @@ I.rain=rain;
     flush();
     if(I.onSheet)I.onSheet(state===1);          /* the sending screen, if it is already open, now knows */
   }
-  I.track=function(ev,o){if(state===2||VIDEO)return;o=o||{};o.ev=ev;o.k=KEY;wait.push(o);flush();};
+  I.track=function(ev,o){if(state===2||VIDEO||I.preview)return;o=o||{};o.ev=ev;o.k=KEY;wait.push(o);flush();};
   I.sheet=function(){return state===1?url:(state?'':null);};
   I.who={g:G,h:H};
   if(VIDEO)state=2;
@@ -1671,7 +1671,7 @@ function cleanBase(){var b=(mkBase.value||'').trim().split('#')[0].split('?')[0]
 function h32(t,seed){var h=seed>>>0,i;for(i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h;}
 function idOf(g){
   var t=phone(mkHost.value)+'|'+(g.phone||'n:'+g.name.toLowerCase());
-  return ('000000'+h32(t,2166136261).toString(36)).slice(-7)+(h32(t+'~',40503)%36).toString(36);
+  return 'x'+('000000'+h32(t,2166136261).toString(36)).slice(-7)+(h32(t+'~',40503)%36).toString(36);   /* the leading letter keeps a spreadsheet from reading the code as a number */
 }
 function sender(){return I.clean(mkBy.value).slice(0,40);}
 function linkFor(g){
@@ -1728,7 +1728,7 @@ function readFile(f){
 }
 function waLink(g){
   /* a relative who sends the card signs it with their own name */
-  var by=sender(),own=!by||/\b(sidharth|jaya)\b/i.test(by);
+  var by=sender(),own=!by||(/^(?:sidharth|jaya|sharma|and|&|\s)+$/i.test(by)&&/sidharth|jaya/i.test(by));
   return 'https://wa.me/'+(g.phone||'')+'?text='+encodeURIComponent('Dear '+g.name+',\nWith great joy, we invite you to '+(own?'our wedding':'the wedding of Sidharth and Jaya')+'. Your personal invitation card is here.\n'+linkFor(g)+'\n\n'+(own?'Sidharth and Jaya':by));
 }
 function mark(g,v){
@@ -1770,10 +1770,10 @@ function render(){
     var w=el('a','mbtn'+(done?'':' mbtn--solid'),done?'Send again':'Send on WhatsApp');w.target='_blank';w.rel='noopener';w.href=waLink(g);
     w.addEventListener('click',function(){setTimeout(function(){mark(g,true);},500);});
     var c=el('button','mbtn','Copy link');c.type='button';c.addEventListener('click',function(){copy(url,c);});
-    var p=el('button','mbtn','Preview card');p.type='button';p.addEventListener('click',function(){I.applyGuest(g.name);closeMaker();I.resetCover();});
+    var p=el('button','mbtn','Preview card');p.type='button';p.addEventListener('click',function(){I.preview=true;I.applyGuest(g.name);closeMaker();I.resetCover();});
     if(online){bar.appendChild(w);bar.appendChild(c);}
     bar.appendChild(p);
-    if(done){var u=el('button','mbtn','Mark not sent');u.type='button';u.addEventListener('click',function(){mark(g,false);});bar.appendChild(u);}
+    var u=el('button','mbtn',done?'Mark not sent':'Mark sent');u.type='button';u.addEventListener('click',function(){mark(g,!done);});if(done||online)bar.appendChild(u);
     li.appendChild(bar);mkOut.appendChild(li);
   });
   d.getElementById('mkQueue').hidden=!guests.length||!online;
@@ -1781,6 +1781,7 @@ function render(){
   d.getElementById('mkNext').disabled=n>=guests.length;
 }
 function makeLinks(){
+  if(cleanBase()&&!phone(mkHost.value)){guests=[];render();note('Type your WhatsApp number above first, with all its digits. Replies are sent to it, and the guest sheet uses it to tell your cards from those of others.');return;}
   guests=parseLines(mkNames.value);
   store('inv_base',mkBase.value.trim());store('inv_host',mkHost.value.trim());store('inv_list',mkNames.value);store('inv_by',mkBy.value.trim());
   listed();groupLine();
@@ -1792,6 +1793,7 @@ d.getElementById('mkNext').addEventListener('click',function(){
   W.open(waLink(g),'_blank');mark(g,true);
 });
 d.getElementById('mkFile').addEventListener('change',function(e){if(e.target.files&&e.target.files[0])readFile(e.target.files[0]);});
+d.getElementById('mkFile').addEventListener('click',function(){try{this.value='';}catch(e){}});
 /* One link for a group or a status: the plain address with the sender's number, so that replies know where to go. */
 var mkGroup=d.getElementById('mkGroup'),mkGroupUrl=d.getElementById('mkGroupUrl');
 function groupLink(){var b=cleanBase(),h=phone(mkHost.value);return b?b+(h?'?h='+h:''):'';}
@@ -1799,6 +1801,7 @@ function groupLine(){var u=groupLink();mkGroup.hidden=!u;mkGroupUrl.textContent=
 d.getElementById('mkGroupCopy').addEventListener('click',function(){var u=groupLink();if(u)copy(u,this);});
 mkHost.addEventListener('input',groupLine);mkBase.addEventListener('input',groupLine);
 function openMaker(){
+  I.preview=false;
   if(!mkBase.value)mkBase.value=store('inv_base')||baseUrl();
   if(!mkHost.value)mkHost.value=store('inv_host')||'';
   if(!mkBy.value)mkBy.value=store('inv_by')||'';

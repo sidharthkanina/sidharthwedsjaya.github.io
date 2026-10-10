@@ -1728,7 +1728,7 @@ function readFile(f){
 }
 function waLink(g){
   /* a relative who sends the card signs it with their own name */
-  var by=sender(),own=!by||/sidharth|jaya/i.test(by);
+  var by=sender(),own=!by||/\b(sidharth|jaya)\b/i.test(by);
   return 'https://wa.me/'+(g.phone||'')+'?text='+encodeURIComponent('Dear '+g.name+',\nWith great joy, we invite you to '+(own?'our wedding':'the wedding of Sidharth and Jaya')+'. Your personal invitation card is here.\n'+linkFor(g)+'\n\n'+(own?'Sidharth and Jaya':by));
 }
 function mark(g,v){

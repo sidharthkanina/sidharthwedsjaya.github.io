@@ -1,1 +1,1 @@
-Replace this whole line with the web app link of your guest sheet.
+https://script.google.com/macros/s/AKfycbyiujqbK_so9kb0_xriXN2yGtt0so_Bv-0ucefMMfjFxFhE3OmHpWE44iDTT3rb2s2h1Q/exec

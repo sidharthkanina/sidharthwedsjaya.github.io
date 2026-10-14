@@ -548,6 +548,23 @@ html,body{background:#EFE6D6}
 .view.is-on img{transform:none}
 .view p{font-style:italic;font-size:15px;color:#EAD9B4;margin-top:14px}
 html.video .view{display:none}
+
+/* ---------- The music button: a small gold coin in the corner, there only once the card is open ---------- */
+.snd{position:fixed;z-index:48;top:calc(env(safe-area-inset-top,0px) + 12px);right:12px;right:calc(max(0px,(100vw - var(--col))/2) + env(safe-area-inset-right,0px) + 12px);width:44px;height:44px;margin:0;padding:0;display:flex;align-items:center;justify-content:center;border:1px solid var(--sona);border-radius:50%;background:rgba(251,241,214,.92);color:var(--sona-deep);box-shadow:0 2px 10px rgba(75,33,22,.20);cursor:pointer;opacity:0;visibility:hidden;transition:opacity .5s ease,visibility 0s linear .5s,color .3s ease;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html.opened .snd{opacity:1;visibility:visible;transition:opacity .7s ease .5s,visibility 0s linear 0s,color .3s ease}
+.snd svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.snd .snd__ink{fill:currentColor;stroke:none}
+.snd .snd__gap{stroke:#FBF1D6;stroke-width:4.4;display:none}
+.snd .snd__bar{stroke-width:1.7;display:none}
+.snd.is-off{color:var(--mehndi-soft)}
+.snd.is-off .snd__note{opacity:.62}
+.snd.is-off .snd__gap,.snd.is-off .snd__bar{display:block}
+.snd::after{content:"";position:absolute;top:-1px;right:-1px;bottom:-1px;left:-1px;border:1px solid var(--sona);border-radius:50%;opacity:0;pointer-events:none}
+html.opened .snd.is-new::after{animation:sndRing 1.7s ease-out 1.4s 3}
+@keyframes sndRing{0%{opacity:.75;transform:scale(1)}100%{opacity:0;transform:scale(1.85)}}
+@media (prefers-reduced-motion:reduce){html.opened .snd.is-new::after{animation:none}}
+html.video .snd{display:none}
+@media print{.snd{display:none}}
 @media (prefers-reduced-motion:reduce){.paint__pan,.niche__rays,.niche__img,.glint,.ember,.plan__moon .tw2{animation:none !important}.ember{display:none}}
 @media (max-height:640px){.glass{top:calc(8% + env(safe-area-inset-top,0px));bottom:12.5%}.glass__ganesh{width:calc(var(--k)*62px);height:calc(var(--k)*68px)}.glass__when span{display:none}}
 /* nothing inside the card is drawn or animated until the envelope opens, which keeps the opening smooth on slower phones */
@@ -1086,6 +1103,70 @@ function clean(s){return String(s==null?'':s).replace(/[\u0000-\u001F\u007F<>]/g
 var guest=VIDEO?'':clean(qs.get('to')||hs.get('to')||'');
 var cover=d.getElementById('cover'),card=d.getElementById('card'),seal=d.getElementById('seal');
 
+/* The music. A phone lets a page make sound only after a touch, so it begins with the tap that opens the envelope, and
+   it repeats until the small button in the corner is tapped. It is a separate file next to this page; its name is
+   written below when the site is built with music. Without a name, or if the file cannot be had, the card stays
+   silent and shows no button. The music also stops whenever the page is out of sight, and waits for the guest to return. */
+var MUSIC='music.mp3';
+var music=(function(){
+  if(!MUSIC||VIDEO||!W.Audio)return null;
+  var a=null,btn=null,want=false,dead=false,mine=0;
+  function show(){
+    if(!btn)return;
+    var on=!!a&&!a.paused;
+    btn.classList.toggle('is-off',!on);
+    btn.setAttribute('aria-label',on?'Turn the music off':'Turn the music on');
+  }
+  function fail(){dead=true;want=false;if(btn)btn.hidden=true;}
+  /* mine counts the pauses asked for here, so that a pause made by the phone itself (a call, a headset pulled out) can be told apart */
+  function hush(){if(a&&!a.paused){mine++;try{a.pause();}catch(e){mine--;}}}
+  function warm(){
+    if(a||dead)return;
+    try{
+      a=new W.Audio();a.loop=true;
+      a.preload=(W.navigator.connection&&W.navigator.connection.saveData)?'none':'auto';
+      a.addEventListener('error',fail);
+      a.addEventListener('play',function(){want=true;show();});
+      a.addEventListener('pause',function(){if(mine>0)mine--;else if(!d.hidden)want=false;show();});
+      a.addEventListener('timeupdate',function(){if(d.hidden)hush();});
+      a.src=MUSIC;
+    }catch(e){a=null;dead=true;}
+  }
+  function play(){
+    if(!a||dead)return;
+    want=true;
+    var p;try{p=a.play();}catch(e){want=false;}
+    /* a refusal by the browser leaves the button showing 'off'; a start cut short by a pause of our own is not a refusal */
+    if(p&&p.then)p.then(show,function(e){if(!e||e.name!=='AbortError')want=false;show();});
+    show();
+  }
+  function button(){
+    if(btn||dead)return;
+    btn=d.createElement('button');btn.type='button';btn.id='snd';btn.className='snd is-new is-off';
+    btn.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g class="snd__note"><path d="M9.6 16.9V6l10-2.3v11.2"/><path class="snd__ink" d="M9.6 6l10-2.3v2.9l-10 2.3z"/><ellipse class="snd__ink" cx="7.1" cy="17.3" rx="2.7" ry="2.05" transform="rotate(-16 7.1 17.3)"/><ellipse class="snd__ink" cx="17.1" cy="15.3" rx="2.7" ry="2.05" transform="rotate(-16 17.1 15.3)"/></g><path class="snd__gap" d="M4.4 3.6 20.2 20.4"/><path class="snd__bar" d="M4.4 3.6 20.2 20.4"/></svg>';
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();btn.classList.remove('is-new');
+      if(!a||dead)return;
+      if(a.paused)play();else{want=false;hush();}
+    });
+    d.body.appendChild(btn);show();
+  }
+  function start(){
+    warm();if(!a||dead)return;
+    button();
+    try{if(a.currentTime)a.currentTime=0;}catch(e){}
+    play();
+    try{if(W.navigator.mediaSession&&W.MediaMetadata)W.navigator.mediaSession.metadata=new W.MediaMetadata({title:'Sidharth weds Jaya',artist:'Wedding invitation'});}catch(e){}
+  }
+  function stop(){want=false;hush();}
+  d.addEventListener('visibilitychange',function(){
+    if(!a||dead)return;
+    if(d.hidden)hush();else if(want)play();
+  });
+  W.addEventListener('pagehide',hush);
+  return{start:start,stop:stop,warm:warm,state:function(){return{made:!!a,playing:!!a&&!a.paused,want:want,dead:dead,at:a?a.currentTime:0};}};
+})();
+
 function applyGuest(name){
   guest=name;
   d.getElementById('inviteLine').textContent=name?'you are invited':'You are invited';
@@ -1107,6 +1188,7 @@ function setReady(skip){
   if(isReady)return;isReady=ready=true;
   if(skip===true)cover.classList.add('is-skip');
   cover.classList.add('is-ready');card.style.transform='';
+  if(music&&!qs.has('make')){try{music.warm();}catch(e){}}
 }
 /* The opening act: two little people bring the card down. Its clock counts only the frames that are really drawn on the
    screen, so the act waits while the page is loading in the background or sitting out of sight, and nobody misses it.
@@ -1178,6 +1260,7 @@ function openCard(){
     return;
   }
   if(opened)return;opened=true;
+  if(music){try{music.start();}catch(e){}}        /* whatever happens to the music, the envelope opens */
   cover.classList.add('is-open');
   later(820,function(){cover.classList.add('is-glow');sparks();});
   later(1650,function(){cover.classList.add('is-burst');});
@@ -1189,7 +1272,7 @@ function openCard(){
   });
 }
 function resetCover(){
-  opened=false;
+  opened=false;if(music){try{music.stop();}catch(e){}}
   cover.classList.add('no-anim');cover.classList.remove('is-open','is-glow','is-burst','is-gone');cover.hidden=false;
   d.getElementById('sparks').textContent='';
   root.classList.add('pre','locked');root.classList.remove('opened');
@@ -1198,7 +1281,7 @@ function resetCover(){
 cover.addEventListener('click',openCard);
 cover.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
 
-W.__inv={d:d,W:W,root:root,qs:qs,VIDEO:VIDEO,REDUCE:REDUCE,clean:clean,applyGuest:applyGuest,openCard:openCard,resetCover:resetCover,fit:fit,seal:seal,
+W.__inv={d:d,W:W,root:root,qs:qs,VIDEO:VIDEO,REDUCE:REDUCE,clean:clean,applyGuest:applyGuest,openCard:openCard,resetCover:resetCover,fit:fit,seal:seal,music:music,
   getGuest:function(){return guest;},clock:function(t){vnow=t;},queue:queue,act:function(){return{t:actT,on:actOn,ready:isReady};}};
 })();
 </script>
@@ -1801,7 +1884,7 @@ function groupLine(){var u=groupLink();mkGroup.hidden=!u;mkGroupUrl.textContent=
 d.getElementById('mkGroupCopy').addEventListener('click',function(){var u=groupLink();if(u)copy(u,this);});
 mkHost.addEventListener('input',groupLine);mkBase.addEventListener('input',groupLine);
 function openMaker(){
-  I.preview=false;
+  I.preview=false;if(I.music){try{I.music.stop();}catch(e){}}
   if(!mkBase.value)mkBase.value=store('inv_base')||baseUrl();
   if(!mkHost.value)mkHost.value=store('inv_host')||'';
   if(!mkBy.value)mkBy.value=store('inv_by')||'';

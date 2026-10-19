@@ -285,7 +285,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
         <svg class="note-ic" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
         <span class="bars"><i></i><i></i><i></i><i></i></span>
       </span>
-      <span><span class="t1">Gaana chalao</span><span class="t2">Hamari shaadi wali dhun</span></span>
+      <span><span class="t1">Gaana chalao</span><span class="t2">Hamari dhun, sirf tumhare liye</span></span>
     </button>
     <figure class="mat">
       <button class="ph" type="button" aria-label="Photo bada karke dekho"><img src="photos/hero.jpg" width="1000" height="1500" alt="Sidharth aur Jaya, maatha milaye, haath mein gulaabi bouquet" decoding="async"></button>
@@ -453,7 +453,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
   <svg class="note-ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
 </button>
-<audio id="song" src="../music.mp3" preload="auto" loop></audio>
+<audio id="song" src="media/love-background.mp3" preload="auto" loop></audio>
 
 <div class="cover" id="cover" hidden role="dialog" aria-modal="true" aria-labelledby="coverTitle">
   <div class="door l" aria-hidden="true"></div>
@@ -650,7 +650,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
     if (on){ t1 = 'Gaana chal raha hai'; t2 = 'Rokne ke liye tap karo'; }
     else if (musicWanted && reelLoud()){ t1 = 'Gaana thodi der ruka hai'; t2 = 'Reel ke baad wahin se chalega'; }
     else if (song.currentTime > 0){ t1 = 'Gaana ruka hua hai'; t2 = 'Tap karo, wahin se chalega'; }
-    else { t1 = 'Gaana chalao'; t2 = 'Hamari shaadi wali dhun'; }
+    else { t1 = 'Gaana chalao'; t2 = 'Hamari dhun, sirf tumhare liye'; }
     cta.querySelector('.t1').textContent = t1;
     cta.querySelector('.t2').textContent = t2;
     [cta, fab].forEach(function(b){ b.classList.toggle('playing', on); b.setAttribute('aria-pressed', String(on)); });

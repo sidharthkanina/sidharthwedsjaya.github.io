@@ -96,18 +96,16 @@ p{margin:0}
 .mat::after{content:"";position:absolute;inset:6px;border:1px solid var(--gold-line);border-radius:1px;pointer-events:none}
 .mat figcaption{font-family:var(--f-hand);font-size:1.2rem;text-align:center;padding:10px 8px 14px;color:var(--ink-soft)}
 
-/* our song: the official video, which steps aside while the reel plays with sound */
-.song-card{position:relative;z-index:4;margin:4px 0 0;display:flex;flex-direction:column;gap:10px;background:var(--sheet);padding:10px 10px 12px;border:1.5px solid var(--gold-line);border-radius:8px;box-shadow:var(--shadow)}
-.yt{position:relative;width:100%;max-width:100%;aspect-ratio:16 / 9;border-radius:5px;overflow:hidden;background:var(--ink)}
-.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
-.song-card figcaption{display:flex;align-items:center;gap:12px;padding:0 4px}
-.song-card .disc{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--accent-big);color:var(--sheet)}
-.song-card:not(.playing) .disc{animation:pulse 2.2s ease-in-out infinite}
+/* our song */
+.music-cta{position:relative;z-index:4;align-self:flex-start;display:inline-flex;align-items:center;gap:12px;max-width:100%;
+  font-family:var(--f-body);color:var(--ink);text-align:left;background:var(--sheet);
+  border:1.5px solid var(--gold-line);border-radius:999px;padding:7px 22px 7px 7px;min-height:56px;
+  box-shadow:var(--shadow);cursor:pointer;touch-action:manipulation}
+.music-cta .disc{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--accent-big);color:var(--sheet)}
+.music-cta:not(.playing) .disc{animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 var(--petal)}55%{box-shadow:0 0 0 10px transparent}}
-.song-card .t1{display:block;font-weight:600;font-size:1rem;line-height:1.25}
-.song-card .t2{display:block;font-size:.88rem;line-height:1.35;color:var(--ink-soft)}
-.song-card.nudge .yt{animation:nudge 1.3s ease-in-out 3}
-@keyframes nudge{50%{box-shadow:0 0 0 5px var(--petal)}}
+.music-cta .t1{display:block;font-weight:600;font-size:1rem;line-height:1.25}
+.music-cta .t2{display:block;font-size:.85rem;line-height:1.25;color:var(--ink-soft)}
 .note-ic{display:block}
 .bars{display:none;align-items:flex-end;gap:2px;height:16px}
 .bars i{display:block;width:3px;height:100%;border-radius:1px;background:currentColor;transform-origin:50% 100%;animation:eq .9s ease-in-out infinite}
@@ -248,13 +246,13 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
 .hero-date{animation:rise .8s ease-out .75s backwards}
 .odo-col{animation:roll 1.3s cubic-bezier(.2,.8,.2,1) 1.3s backwards}
 .hero-lede{animation:rise .9s ease-out .95s backwards}
-.song-card{animation:rise .8s ease-out 1.15s backwards}
+.music-cta{animation:rise .8s ease-out 1.15s backwards}
 .hero .mat{animation:settle 1.3s cubic-bezier(.2,.8,.2,1) 1.05s backwards}
 @keyframes rise{from{opacity:0;transform:translateY(18px)}}
 @keyframes roll{from{transform:translateY(0)}}
 @keyframes settle{from{opacity:0;transform:translateY(26px) rotate(-2deg) scale(.97)}}
 /* while the cover is closed the opening waits, so it plays as the doors part */
-.sealed .hero .eyebrow,.sealed .hero-title .ch,.sealed .hero-date,.sealed .odo-col,.sealed .hero-lede,.sealed .song-card,.sealed .hero .mat{animation-play-state:paused}
+.sealed .hero .eyebrow,.sealed .hero-title .ch,.sealed .hero-date,.sealed .odo-col,.sealed .hero-lede,.sealed .music-cta,.sealed .hero .mat{animation-play-state:paused}
 
 /* scroll reveals: everything is visible without script; script only adds a softer start state below the fold */
 .js .rv{transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity 1s ease,filter 1s ease;transition-delay:var(--d,0s)}
@@ -266,7 +264,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
 .js .letter.pre p{opacity:.2}
 
 @media (prefers-reduced-motion: reduce){
-  .hero .eyebrow,.hero-title .ch,.hero-date,.odo-col,.hero-lede,.song-card,.song-card .disc,.song-card.nudge .yt,.bars i,.music-fab,.hero .mat,.stamp.ok,.stamp.thump,.btn-yes,.beat,.timer .num.flipnum,.lb img{animation:none}
+  .hero .eyebrow,.hero-title .ch,.hero-date,.odo-col,.hero-lede,.music-cta,.music-cta .disc,.bars i,.music-fab,.hero .mat,.stamp.ok,.stamp.thump,.btn-yes,.beat,.timer .num.flipnum,.lb img{animation:none}
   .btn-no,.js .rv,.letter p{transition:none}
   .petals{display:none}
   .door,.cover-in{transition:none}
@@ -282,13 +280,13 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
     <h1 class="hero-title" aria-label="Ek saal"><span class="w" aria-hidden="true"><span class="ch" style="--i:0">E</span><span class="ch" style="--i:1">k</span></span> <span class="w" aria-hidden="true"><span class="ch" style="--i:2">s</span><span class="ch" style="--i:3">a</span><span class="ch" style="--i:4">a</span><span class="ch" style="--i:5">l</span></span></h1>
     <p class="hero-date" aria-label="20 October 2025 se 20 October 2026"><span aria-hidden="true">20.10.202</span><span class="odo" aria-hidden="true"><span class="odo-col"><span>5</span><span>6</span></span></span></p>
     <p class="hero-lede">Aaj se theek ek saal pehle hum pehli baar mile the. Tab se har din thoda zyada khoobsurat hai, aur phone ka bill thoda zyada mehenga.</p>
-    <figure class="song-card" id="songCard">
-      <div class="yt"><iframe id="yt" src="https://www.youtube-nocookie.com/embed/JBCx0QyP8VQ?enablejsapi=1&amp;playsinline=1&amp;rel=0&amp;loop=1&amp;playlist=JBCx0QyP8VQ" title="Pehli Nazar Mein, Race" allow="autoplay; encrypted-media; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>
-      <figcaption>
-        <span class="disc" aria-hidden="true"><svg class="note-ic" viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg><span class="bars"><i></i><i></i><i></i><i></i></span></span>
-        <span><span class="t1">Pehli Nazar Mein, hamara gaana</span><span class="t2" id="songHint" aria-live="polite">Play dabao aur aage padhte jaana.</span></span>
-      </figcaption>
-    </figure>
+    <button class="music-cta" id="musicMain" type="button" aria-pressed="false">
+      <span class="disc" aria-hidden="true">
+        <svg class="note-ic" viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+        <span class="bars"><i></i><i></i><i></i><i></i></span>
+      </span>
+      <span><span class="t1">Gaana chalao</span><span class="t2">Hamari shaadi wali dhun</span></span>
+    </button>
     <figure class="mat">
       <button class="ph" type="button" aria-label="Photo bada karke dekho"><img src="photos/hero.jpg" width="1000" height="1500" alt="Sidharth aur Jaya, maatha milaye, haath mein gulaabi bouquet" decoding="async"></button>
       <figcaption>Sukoon ka address, yahi hai.</figcaption>
@@ -406,7 +404,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
       <p>Isliye aapse jawab maanga jaata hai ki aapko poori zindagi pyaar kyun na kiya jaaye, laad kyun na kiya jaaye, aur thoda sataaya kyun na jaaye.</p>
       <p>Agar aapne jawab nahi diya, toh hum samjhenge ki aapki haan hai. Aur is haan ka matlab hai, hamesha ke liye.</p>
       <p>Saath mein bheja gaya gift pehli kisht samjha jaaye. Baaki pyaar zindagi bhar ki EMI mein milega.</p>
-      <p class="sig">Inspector Sidharth<br>Department of Missing You<br>Pune</p>
+      <p class="sig">Sidharth<br>Department of Missing You<br>Pune</p>
       <div class="reply">
         <span class="n-lbl" id="replyLbl">Ab jawab do</span>
         <div class="reply-row" id="replyRow">
@@ -455,6 +453,7 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
   <svg class="note-ic" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
   <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
 </button>
+<audio id="song" src="../music.mp3" preload="auto" loop></audio>
 
 <div class="cover" id="cover" hidden role="dialog" aria-modal="true" aria-labelledby="coverTitle">
   <div class="door l" aria-hidden="true"></div>
@@ -616,70 +615,67 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
   lb.addEventListener('click', function(e){ if (e.target === lb || e.target.id === 'lbClose') closeLb(); });
   document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && !lb.hidden) closeLb(); });
 
-  // our song is the official video on YouTube; it steps aside while the reel plays with sound
-  var VID = 'JBCx0QyP8VQ';
-  var card = $('songCard'), hint = $('songHint'), fab = $('musicFab');
+  // our song and the reel share the sound: the song steps aside while the reel plays with sound
+  var song = $('song'), cta = $('musicMain'), fab = $('musicFab');
   var reel = $('reel'), sb = $('soundBtn');
-  var yt = null, ytReady = false, ytState = -1, playedOnce = false, pendingPlay = false, pausedForReel = false, nudgeTimer = 0;
-  function ytPlaying(){ return ytState === 1 || ytState === 3; }
+  var musicWanted = false, fadeRaf = 0;
   function reelLoud(){ return !reel.muted && !reel.paused; }
-  function ytPlay(){
-    if (!ytReady){ pendingPlay = true; return; }
-    try { yt.playVideo(); } catch (e) {}
+  function fadeIn(){
+    cancelAnimationFrame(fadeRaf);
+    try { song.volume = 0; } catch (e) {}
+    var t0 = null;
+    function step(t){
+      if (t0 === null) t0 = t;
+      var k = Math.min(1, (t - t0) / 1400);
+      try { song.volume = 0.85 * k; } catch (e) {}
+      if (k < 1) fadeRaf = requestAnimationFrame(step);
+    }
+    fadeRaf = requestAnimationFrame(step);
   }
-  function ytPause(){ pendingPlay = false; if (ytReady){ try { yt.pauseVideo(); } catch (e) {} } }
+  function playSong(){
+    fadeIn();
+    var pr = song.play();
+    if (pr && pr.catch) pr.catch(function(err){
+      if (err && err.name === 'NotAllowedError'){ musicWanted = false; renderMusic(); }
+    });
+  }
+  function syncMusic(){
+    var want = musicWanted && !reelLoud() && !document.hidden;
+    if (want && song.paused) playSong();
+    else if (!want && !song.paused) song.pause();
+    renderMusic();
+  }
   function renderMusic(){
-    var on = ytPlaying();
-    card.classList.toggle('playing', on);
-    fab.classList.toggle('playing', on);
-    fab.setAttribute('aria-pressed', String(on));
+    var on = !song.paused, t1, t2;
+    if (on){ t1 = 'Gaana chal raha hai'; t2 = 'Rokne ke liye tap karo'; }
+    else if (musicWanted && reelLoud()){ t1 = 'Gaana thodi der ruka hai'; t2 = 'Reel ke baad wahin se chalega'; }
+    else if (song.currentTime > 0){ t1 = 'Gaana ruka hua hai'; t2 = 'Tap karo, wahin se chalega'; }
+    else { t1 = 'Gaana chalao'; t2 = 'Hamari shaadi wali dhun'; }
+    cta.querySelector('.t1').textContent = t1;
+    cta.querySelector('.t2').textContent = t2;
+    [cta, fab].forEach(function(b){ b.classList.toggle('playing', on); b.setAttribute('aria-pressed', String(on)); });
     fab.setAttribute('aria-label', on ? 'Gaana roko' : 'Gaana chalao');
-    if (on) hint.textContent = 'Gaana chal raha hai. Aage padhte jaana.';
-    else if (pausedForReel) hint.textContent = 'Reel ke baad gaana wahin se chalega.';
-    else if (playedOnce) hint.textContent = 'Gaana ruka hua hai. Play dabao, wahin se chalega.';
   }
-  // some phones only let a song start from a tap on the video itself, so ask for that one tap
-  function nudgeIfSilent(bringIntoView){
-    clearTimeout(nudgeTimer);
-    nudgeTimer = setTimeout(function(){
-      if (ytPlaying()) return;
-      hint.textContent = 'Gaana chalane ke liye video pe ek baar tap karo.';
-      card.classList.remove('nudge'); void card.offsetWidth; card.classList.add('nudge');
-      if (bringIntoView) card.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
-    }, 1800);
+  function toggleMusic(){
+    musicWanted = song.paused;
+    if (musicWanted && reelLoud()){ reel.muted = true; renderSound(); }
+    syncMusic();
   }
-  window.onYouTubeIframeAPIReady = function(){
-    yt = new YT.Player('yt', { events: {
-      onReady: function(){ ytReady = true; if (pendingPlay){ pendingPlay = false; ytPlay(); } },
-      onStateChange: function(e){
-        ytState = e.data;
-        if (ytPlaying()){
-          playedOnce = true; pausedForReel = false; card.classList.remove('nudge');
-          if (reelLoud()){ reel.muted = true; renderSound(); }
-        }
-        renderMusic();
-      }
-    }});
-  };
-  (function(){
-    var s = document.createElement('script');
-    s.src = 'https://www.youtube.com/iframe_api'; s.async = true;
-    document.head.appendChild(s);
-  })();
-  fab.addEventListener('click', function(){
-    if (ytPlaying()){ pausedForReel = false; ytPause(); return; }
-    pausedForReel = false; ytPlay(); nudgeIfSilent(true);
-  });
+  cta.addEventListener('click', toggleMusic);
+  fab.addEventListener('click', toggleMusic);
+  song.addEventListener('play', renderMusic);
+  song.addEventListener('pause', renderMusic);
+  document.addEventListener('visibilitychange', syncMusic);
   if ('IntersectionObserver' in window){
-    new IntersectionObserver(function(e){ fab.hidden = e[0].isIntersecting; }).observe(card);
+    new IntersectionObserver(function(e){ fab.hidden = e[0].isIntersecting; }).observe(cta);
   } else { fab.hidden = false; }
 
-  // the page opens like a gift: the tap that opens it also starts our song where the phone allows
-  var cover = $('cover'), mainEl = document.querySelector('main'), opened = false;
+  // the page opens like a gift: the tap that opens it also starts our song
+  var cover = $('cover'), openBtn = $('openBtn'), mainEl = document.querySelector('main'), opened = false;
   function setInert(on){ if ('inert' in mainEl) mainEl.inert = on; }
   function openGift(){
     if (opened) return; opened = true;
-    ytPlay(); nudgeIfSilent(false);
+    musicWanted = true; syncMusic();
     setInert(false);
     function go(){
       document.documentElement.classList.remove('sealed', 'lock');
@@ -696,6 +692,8 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
   setInert(true);
   cover.hidden = false;
   cover.addEventListener('click', openGift);
+  // where the browser allows sound without a tap, the song starts right away behind the cover
+  musicWanted = true; syncMusic();
 
   // reel: plays silently while on screen, sound on tap
   function renderSound(){
@@ -703,11 +701,6 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
     sb.setAttribute('aria-pressed', String(!reel.muted));
   }
   function tryPlay(){ var pr = reel.play(); if (pr && pr.catch) pr.catch(function(){}); }
-  function reelChanged(){
-    if (reelLoud()){ if (ytPlaying()){ pausedForReel = true; ytPause(); } }
-    else if (pausedForReel){ pausedForReel = false; ytPlay(); }
-    renderMusic();
-  }
   if ('IntersectionObserver' in window){
     new IntersectionObserver(function(e){
       if (e[0].isIntersecting){ if (!reduce || !reel.muted) tryPlay(); }
@@ -717,10 +710,10 @@ h2{font-family:var(--f-display);font-weight:400;font-size:clamp(2rem,8.6vw,3rem)
   sb.addEventListener('click', function(){
     reel.muted = !reel.muted;
     if (!reel.muted){ reel.currentTime = 0; tryPlay(); }
-    renderSound(); reelChanged();
+    renderSound(); syncMusic();
   });
   reel.addEventListener('click', function(){ if (reel.paused) tryPlay(); else reel.pause(); });
-  ['play', 'pause', 'volumechange'].forEach(function(ev){ reel.addEventListener(ev, reelChanged); });
+  ['play', 'pause', 'volumechange'].forEach(function(ev){ reel.addEventListener(ev, syncMusic); });
 
   // walking flip
   var fb = $('flipBtn'), walking = false;
